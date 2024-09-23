@@ -28,27 +28,27 @@ const Grid = ({ tasks }: { tasks: Task[] }) => {
       dataSource={gridData}
       columnAutoWidth
     >
-      <Selection mode='multiple' showCheckBoxesMode='always' />
+      <Selection mode='multiple' showCheckBoxesMode='none' />
 
       <RowDragging
-        allowReordering
+        // allowReordering
         onReorder={onReorder}
         showDragIcons
       />
 
       <Column
         dataField='text'
-        caption='Subject'
+        caption='Condition (ICD)'
         hidingPriority={3}
       />
       <Column
         dataField='date'
         dataType='date'
-        caption='Due Date'
+        caption='Diagnosis Date'
         hidingPriority={1}
       />
       <Column
-        caption='Assigned To'
+        caption='Severity'
         dataField='manager'
         hidingPriority={0}
       />

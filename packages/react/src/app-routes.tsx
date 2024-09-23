@@ -16,11 +16,11 @@ import { withNavigationWatcher } from './contexts/navigation';
 
 const routes = [
   {
-    path: '/crm-contact-details',
+    path: '/patient-dashboard',
     element: CRMContactDetails,
   },
   {
-    path: '/crm-contact-list',
+    path: '/patient-consent',
     element: CRMContactList,
   },
   {

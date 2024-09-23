@@ -5,19 +5,22 @@ import { ContactFromDetails } from './ContactFormDetails';
 
 import { withLoadPanel } from '../../../utils/withLoadPanel';
 
-import { Contact } from '../../../types/crm-contact';
+import { Patient } from '../../../types/patient';
 
 import ValidationGroup from 'devextreme-react/validation-group';
 
 import './ContactForm.scss';
+import { Contact } from '../../../types/crm-contact';
 
 const ContactFromDetailsWithLoadPanel = withLoadPanel(ContactFromDetails);
 
-export const ContactForm = ({ data, isLoading = false }: { data?: Contact, isLoading: boolean }) => {
+export const ContactForm = ({ data, biodata, isLoading = false }: { data?: Contact, biodata?:Patient, isLoading: boolean }) => {
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState(data);
+  const [bio, setBio] = useState(biodata);
   const dataRef = useRef<Contact>();
 
+  console.log('dadadadadada', biodata); //--------------------------------------------------------
   useEffect(() => {
     setFormData(data);
   }, [data]);
@@ -54,11 +57,12 @@ export const ContactForm = ({ data, isLoading = false }: { data?: Contact, isLoa
   return (
     <div className='contact-form'>
       <ValidationGroup>
-        <ToolbarForm toggleEditing={handleEditClick} onSaveClick={onSaveClick} editing={editing} onCancelClick={onCancelClick} />
+        <ToolbarForm data={formData} biodata={bio} toggleEditing={handleEditClick} onSaveClick={onSaveClick} editing={editing} onCancelClick={onCancelClick} />
         <ContactFromDetailsWithLoadPanel
           loading={isLoading}
           hasData={!!formData}
           data={formData}
+          bio={bio}
           editing={editing}
           updateField={updateField}
           panelProps={{

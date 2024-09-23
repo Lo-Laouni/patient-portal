@@ -3,13 +3,14 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Item, Toolbar } from 'devextreme-react/toolbar';
 import Button from 'devextreme-react/button';
 import DropDownButton from 'devextreme-react/drop-down-button';
-
+import { getAllPatients, getPatientById } from '../../api/apiClient';
 import {
   ContactCards,
   ContactForm,
 } from '../../components';
 
 import { Contact } from '../../types/crm-contact';
+import { Patient } from '../../types/patient';
 
 import {
   getContact,
@@ -26,10 +27,7 @@ const CONTACT_ID = 12;
 
 export const CRMContactDetails = () => {
   const [data, setData] = useState<Contact>();
-  const [notes, setNotes] = useState();
-  const [messages, setMessages] = useState([]);
-  const [activeOpportunities, setActiveOpportunities] = useState();
-  const [closedOpportunities, setClosedOpportunities] = useState();
+  const [biodata, setBioData] = useState<Patient>();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -37,26 +35,16 @@ export const CRMContactDetails = () => {
   }, []);
 
   const loadData = useCallback(() => {
+    setIsLoading(true);
     Promise.all([
+      getPatientById('7fd44f6a-3028-459a-8c47-94622dcb5623')
+        .then((data_) =>{ 
+          setBioData(data_); 
+          console.log('aaaaaaa', data_)
+        }),
       getContact(CONTACT_ID)
         .then((data) => {
           setData(data);
-        }),
-      getContactNotes(CONTACT_ID)
-        .then((data) => {
-          setNotes(data);
-        }),
-      getContactMessages(CONTACT_ID)
-        .then((data) => {
-          setMessages(data);
-        }),
-      getActiveContactOpportunities(CONTACT_ID)
-        .then((data) => {
-          setActiveOpportunities(data);
-        }),
-      getClosedContactOpportunities(CONTACT_ID)
-        .then((data) => {
-          setClosedOpportunities(data);
         }),
     ]).then(() => { setIsLoading(false); }).catch((error) => console.log(error));
   }, []);
@@ -71,12 +59,13 @@ export const CRMContactDetails = () => {
       <div className='view-wrapper view-wrapper-contact-details'>
         <Toolbar className='toolbar-details theme-dependent'>
           <Item location='before'>
-            <Button icon='arrowleft' stylingMode='text' />
+            <Button icon='user' stylingMode='text' />
           </Item>
-          <Item location='before' text={ data?.name ?? 'Loading...' } />
+          <Item location='before' text='Patient BioData & Clinical Data' />
           <Item location='after' locateInMenu='auto'>
             <Button
-              text='Terminate'
+              text='View'
+              icon='eyeopen'
               type='default'
               stylingMode='contained'
             />
@@ -123,6 +112,7 @@ export const CRMContactDetails = () => {
           <div className='left'>
             <ContactForm
               data={data}
+              biodata={biodata}
               isLoading={isLoading}
             />
           </div>
@@ -130,13 +120,8 @@ export const CRMContactDetails = () => {
           <div className='right'>
             <ContactCards
               isLoading={isLoading}
-              activeOpportunities={activeOpportunities}
-              closedOpportunities={closedOpportunities}
-              notes={notes}
-              messages={messages}
               tasks={data?.tasks}
-              activities={data?.activities}
-              name={data?.name} />
+              activities={data?.activities} />
           </div>
         </div>
       </div>

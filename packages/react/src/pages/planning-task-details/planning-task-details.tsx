@@ -7,7 +7,7 @@ import ValidationGroup from 'devextreme-react/validation-group';
 import Button from 'devextreme-react/button';
 import ScrollView from 'devextreme-react/scroll-view';
 
-import { TaskForm, CardActivities, CardNotes, CardMessages } from '../../components';
+import { TaskForm, CardActivities } from '../../components';
 
 import { Task } from '../../types/task';
 
@@ -97,10 +97,10 @@ export const PlanningTaskDetails = () => {
                   <CardActivities activities={task?.activities} isLoading={isLoading} />
                 </TabPanelItem>
                 <TabPanelItem title='Notes'>
-                  <CardNotes items={task?.notes} user={task?.owner} />
+                  <CardActivities activities={task?.activities} isLoading={isLoading} />
                 </TabPanelItem>
                 <TabPanelItem title='Messages'>
-                  <CardMessages items={task?.messages} user={task?.owner} />
+                  <CardActivities activities={task?.activities} isLoading={isLoading} />
                 </TabPanelItem>
               </TabPanel>
             </div>

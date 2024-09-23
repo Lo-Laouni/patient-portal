@@ -4,20 +4,15 @@ import TabPanel, { Item as TabPanelItem } from 'devextreme-react/tab-panel';
 import {
   CardActivities,
   CardNotes,
-  CardMessages,
   CardTasks,
-  CardOpportunities
+  CardOpportunities,
+  CardMessages,
 } from '../..';
 
 export const ContactCards = ({
   isLoading,
   tasks,
   activities,
-  name,
-  activeOpportunities,
-  closedOpportunities,
-  notes,
-  messages,
 }) => {
   return (
     <div className='dx-card details-card'>
@@ -26,26 +21,26 @@ export const ContactCards = ({
         focusStateEnabled={false}
         deferRendering={false}
       >
-        <TabPanelItem title='Tasks'>
+        <TabPanelItem title='Diagnosis'>
           <CardTasks
             isLoading={isLoading}
             tasks={tasks}
           />
         </TabPanelItem>
-        <TabPanelItem title='Activities'>
+        <TabPanelItem title='Medications'>
           <CardActivities activities={activities} isLoading={isLoading} />
         </TabPanelItem>
-        <TabPanelItem title='Opportunities'>
+        <TabPanelItem title='Procedures'>
           <CardOpportunities
-            active={activeOpportunities}
-            closed={closedOpportunities}
+            isLoading={isLoading}
+            tasks={tasks}
           />
         </TabPanelItem>
-        <TabPanelItem title='Notes'>
-          <CardNotes items={notes} user={name} />
+        <TabPanelItem title='Immunizations'>
+          <CardNotes isLoading={isLoading} tasks={tasks} />
         </TabPanelItem>
-        <TabPanelItem title='Messages'>
-          <CardMessages items={messages} user={name} />
+        <TabPanelItem title='Allergies'>
+          <CardMessages isLoading={isLoading} tasks={tasks} />
         </TabPanelItem>
       </TabPanel>
     </div>

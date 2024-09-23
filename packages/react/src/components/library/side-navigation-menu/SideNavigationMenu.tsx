@@ -18,10 +18,6 @@ export type SideNavigationItem = {
   path: string;
   text: string;
   icon: string;
-  items: Array<{
-    text: string;
-    path: string;
-  }>;
 };
 
 export const SideNavigationMenu = (props: React.PropsWithChildren<SideNavigationMenuProps>) => {

@@ -27,6 +27,7 @@ module.exports = {
   },
   'plugins': ['react', '@typescript-eslint', 'react-perf', 'import'],
   'rules': {
+    'strict':'off',
     'jsx-quotes': ['error', 'prefer-single'],
     'block-spacing': 'error',
     'comma-spacing': 'error',

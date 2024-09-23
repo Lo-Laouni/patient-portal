@@ -1,60 +1,73 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 
-import Button from 'devextreme-react/button';
-import { OpportunityTile } from '../../utils/opportunity-tile/OpportunityTile';
-
-import { Opportunities } from '../../../types/card-opportunities';
+import DataGrid, { Selection, RowDragging, Column } from 'devextreme-react/data-grid';
 
 import { withLoadPanel } from '../../../utils/withLoadPanel';
 
-import './CardOpportunities.scss';
+import { Task } from '../../../types/task';
 
-const CardTemplate = ({ items, title }: { items: Opportunities, title: string}) => (
-  <div className='opportunities-block'>
-    <div className='dx-form-group-caption'>{title}</div>
-    <div className='opportunities-container'>
-      {items.map((item) => (
-        <OpportunityTile
-          key={item.name}
-          name={item.name}
-          products={item.products}
-          total={item.total}
-          manager={item.manager}
-        />
-      ))}
-    </div>
-  </div>
-);
+import '../card-tasks/CardTasks.scss';
 
-const Cards = ({ active, closed }: { active: Opportunities, closed: Opportunities }) => (
-  <>
-    <Button
-      text='Add Opportunity'
-      icon='add'
-      width={300}
-      height={115}
-      stylingMode='outlined'
-      type='default'
-      className='add-tile'
-    />
+const Grid = ({ tasks }: { tasks: Task[] }) => {
+  const [gridData, setGridData] = useState(tasks);
 
-    <CardTemplate title='Active' items={active} />
-    <CardTemplate title='Closed' items={closed} />
-  </>
-);
+  const onReorder = useCallback((e) => {
+    const visibleRows = e.component.getVisibleRows();
+    const toIndex = gridData.indexOf(visibleRows[e.toIndex].data);
+    const fromIndex = gridData.indexOf(e.itemData);
 
-const CardsWithLoadPanel = withLoadPanel(Cards);
+    const newGridData = [...gridData];
+    newGridData.splice(fromIndex, 1);
+    newGridData.splice(toIndex, 0, e.itemData);
+    setGridData(newGridData);
+  }, [gridData]);
 
-export const CardOpportunities = ({ active, closed }: { active?: Opportunities, closed?: Opportunities }) => {
   return (
-    <div className='card-opportunies'>
-      <CardsWithLoadPanel
-        active={active}
-        closed={closed}
-        hasData={!!(active && closed)}
+    <DataGrid
+      className='tasks-grid'
+      dataSource={gridData}
+      columnAutoWidth
+    >
+      <Selection mode='multiple' showCheckBoxesMode='none' />
+
+      <RowDragging
+        // allowReordering
+        onReorder={onReorder}
+        showDragIcons
+      />
+
+      <Column
+        dataField='text'
+        caption='Procedure'
+        hidingPriority={3}
+      />
+      <Column
+        caption='Code'
+        dataField='manager'
+        hidingPriority={0}
+      />
+      <Column
+        dataField='date'
+        dataType='date'
+        caption='Procedure Date'
+        hidingPriority={1}
+      />
+    </DataGrid>
+  );
+};
+
+const GridWithLoadPanel = withLoadPanel(Grid);
+
+export const CardOpportunities = ({ tasks, isLoading }: { tasks?: Task[], isLoading: boolean }) => {
+  return (
+    <div className='card-tasks'>
+      <GridWithLoadPanel
+        tasks={tasks?.filter((item) => !!item.status && !!item.priority)}
+        hasData={!!tasks}
+        loading={isLoading}
         panelProps={{
-          container: '.card-opportunies',
-          position: { of: '.card-opportunies' }
+          container: '.card-tasks',
+          position: { of: '.card-tasks' }
         }}
       />
     </div>

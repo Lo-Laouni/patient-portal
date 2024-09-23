@@ -1,86 +1,81 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 
-import TextArea from 'devextreme-react/text-area';
-import Toolbar, { Item } from 'devextreme-react/toolbar';
-import Button from 'devextreme-react/button';
-import { formatDate } from 'devextreme/localization';
-import Validator, { RequiredRule } from 'devextreme-react/validator';
-import ValidationGroup from 'devextreme-react/validation-group';
-import ScrollView from 'devextreme-react/scroll-view';
+import DataGrid, { Selection, RowDragging, Column } from 'devextreme-react/data-grid';
 
-import { Notes, Note } from '../../../types/card-notes';
+import { withLoadPanel } from '../../../utils/withLoadPanel';
 
-import './CardNotes.scss';
+import { Task } from '../../../types/task';
 
-const Card = ({ note }: { note: Note }) => {
+import '../card-tasks/CardTasks.scss';
+
+const Grid = ({ tasks }: { tasks: Task[] }) => {
+  const [gridData, setGridData] = useState(tasks);
+
+  const onReorder = useCallback((e) => {
+    const visibleRows = e.component.getVisibleRows();
+    const toIndex = gridData.indexOf(visibleRows[e.toIndex].data);
+    const fromIndex = gridData.indexOf(e.itemData);
+
+    const newGridData = [...gridData];
+    newGridData.splice(fromIndex, 1);
+    newGridData.splice(toIndex, 0, e.itemData);
+    setGridData(newGridData);
+  }, [gridData]);
+
   return (
-    <div className='note dx-card'>
-      <div className='note-title'>
-        <div>
-          {formatDate(new Date(note.date), 'MM/dd/yyyy')} - {note.manager}
-        </div>
-        <div>
-          <Button icon='overflow' stylingMode='text' />
-        </div>
-      </div>
-      <div className='note-text'>{note.text}</div>
-    </div>
+    <DataGrid
+      className='tasks-grid'
+      dataSource={gridData}
+      columnAutoWidth
+    >
+      <Selection mode='multiple' showCheckBoxesMode='none' />
+
+      <RowDragging
+        // allowReordering
+        onReorder={onReorder}
+        showDragIcons
+      />
+
+      <Column
+        dataField='text'
+        caption='Immunization'
+        hidingPriority={3}
+      />
+      <Column
+        caption='Vaccine Code'
+        dataField='manager'
+        hidingPriority={0}
+      />
+      <Column
+        dataField='date'
+        dataType='date'
+        caption='Date'
+        hidingPriority={1}
+      />
+      <Column
+        dataField='date'
+        dataType='date'
+        caption='Description/Notes'
+        hidingPriority={1}
+      />
+    </DataGrid>
   );
 };
 
-export const CardNotes = ({ items, user }: { items?: Notes; user?: string }) => {
-  const [noteText, setNoteText] = useState('');
-  const [data, setData] = useState(items);
+const GridWithLoadPanel = withLoadPanel(Grid);
 
-  useEffect(() => {
-    setData(items);
-  }, [items]);
-
-  const add = useCallback((e) => {
-    if (!e.validationGroup.validate().isValid || !data || !user) {
-      return;
-    }
-    setData([...data, { manager: user, date: new Date(), text: noteText }]);
-    e.validationGroup.reset();
-  }, [noteText, data, user]);
-
-  const onNoteTextChanged = useCallback((value) => {
-    setNoteText(value);
-  }, []);
-
+export const CardNotes = ({ tasks, isLoading }: { tasks?: Task[], isLoading: boolean }) => {
   return (
-    <ValidationGroup>
-      <div className='notes'>
-        <div className='input-notes'>
-          <TextArea label='New Note' stylingMode='filled' value={noteText} valueChangeEvent='keyup' onValueChange={onNoteTextChanged}>
-            <Validator>
-              <RequiredRule />
-            </Validator>
-          </TextArea>
-          <Toolbar>
-            <Item
-              location='after'
-              widget='dxButton'
-              options={{
-                text: 'Add',
-                stylingMode: 'contained',
-                type: 'default',
-                onClick: add,
-              }}
-            />
-          </Toolbar>
-        </div>
-
-        <div className='messages-content'>
-          <ScrollView>
-            <div className='message-list'>
-              {data?.map((note, index) => (
-                <Card key={index} note={note} />
-              ))}
-            </div>
-          </ScrollView>
-        </div>
-      </div>
-    </ValidationGroup>
+    <div className='card-tasks'>
+      <GridWithLoadPanel
+        tasks={tasks?.filter((item) => !!item.status && !!item.priority)}
+        hasData={!!tasks}
+        loading={isLoading}
+        panelProps={{
+          container: '.card-tasks',
+          position: { of: '.card-tasks' }
+        }}
+      />
+    </div>
   );
 };

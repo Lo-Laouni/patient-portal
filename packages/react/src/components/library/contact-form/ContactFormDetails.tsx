@@ -4,10 +4,10 @@ import classNames from 'classnames';
 
 import From, { Item as ItemForm, GroupItem, ColCountByScreen } from 'devextreme-react/form';
 import SelectBox from 'devextreme-react/select-box';
-import Button from 'devextreme-react/button';
+// import Button from 'devextreme-react/button';
 import TextBox from 'devextreme-react/text-box';
-import Validator, { PatternRule, EmailRule } from 'devextreme-react/validator';
-import NumberBox from 'devextreme-react/number-box';
+// import Validator, { PatternRule, EmailRule } from 'devextreme-react/validator';
+// import NumberBox from 'devextreme-react/number-box';
 
 import { FormPhoto } from '../../utils/form-photo/FormPhoto';
 import { ContactStatus } from '../../utils/contact-status/ContactStatus';
@@ -15,6 +15,7 @@ import { FormTextbox } from '../../utils/form-textbox/FormTextbox';
 
 import { Contact } from '../../../types/crm-contact';
 import { CONTACT_STATUS_LIST } from '../../../shared/constants';
+import { Patient } from '../../../types/patient';
 
 const PHOTO_SIZE = 184;
 
@@ -33,8 +34,8 @@ const statusRender = (text: string) => (
 
 const statusItemRender = (text: string) => <ContactStatus text={text} />;
 
-export const ContactFromDetails = ({ data, editing, updateField }: {
-  data: Contact, editing: boolean, updateField: (field: string | number) => (value: string | number) => void
+export const ContactFromDetails = ({ data, bio, editing, updateField }: {
+  data: Contact, bio: Patient, editing: boolean, updateField: (field: string | number) => (value: string | number) => void
 }) => {
   const stylingMode = 'filled';
   return (
@@ -51,7 +52,7 @@ export const ContactFromDetails = ({ data, editing, updateField }: {
         <GroupItem>
           <ItemForm>
             <SelectBox
-              label='Status'
+              label='Vital Status'
               width='100%'
               value={data.status}
               readOnly={!editing}
@@ -63,7 +64,7 @@ export const ContactFromDetails = ({ data, editing, updateField }: {
             />
           </ItemForm>
 
-          <ItemForm>
+          <ItemForm cssClass='accent'>
             <FormTextbox
               label='First Name'
               value={data.firstName}
@@ -72,7 +73,7 @@ export const ContactFromDetails = ({ data, editing, updateField }: {
             />
           </ItemForm>
 
-          <ItemForm>
+          <ItemForm cssClass='accent'>
             <FormTextbox
               label='Last Name'
               value={data.lastName}
@@ -81,10 +82,9 @@ export const ContactFromDetails = ({ data, editing, updateField }: {
             />
           </ItemForm>
         </GroupItem>
-
-        <ItemForm>
+        <ItemForm cssClass='accent'>
           <FormTextbox
-            label='Position'
+            label='Gender'
             value={data.position}
             isEditing={!editing}
             onValueChange={updateField('position')}
@@ -93,108 +93,81 @@ export const ContactFromDetails = ({ data, editing, updateField }: {
 
         <ItemForm cssClass='accent'>
           <FormTextbox
-            label='Assigned to'
+            label='Date of Birth'
             value={data.manager}
             isEditing={!editing}
             onValueChange={updateField('manager')}
           />
         </ItemForm>
-
-        <ItemForm cssClass='accent' colSpan={2}>
+        <ItemForm cssClass='accent'>
           <FormTextbox
-            label='Company'
-            value={data.company}
+            label='Father Names'
+            value={data.position}
             isEditing={!editing}
-            onValueChange={updateField('company')}
+            onValueChange={updateField('position')}
+          />
+        </ItemForm>
+
+        <ItemForm cssClass='accent'>
+          <FormTextbox
+            label='Mother Names'
+            value={data.manager}
+            isEditing={!editing}
+            onValueChange={updateField('manager')}
+          />
+        </ItemForm>
+        <ItemForm cssClass='accent'>
+          <FormTextbox
+            label='Marital Status'
+            value={data.position}
+            isEditing={!editing}
+            onValueChange={updateField('position')}
+          />
+        </ItemForm>
+
+        <ItemForm cssClass='accent'>
+          <FormTextbox
+            label='Blood Group'
+            value={data.manager}
+            isEditing={!editing}
+            onValueChange={updateField('manager')}
           />
         </ItemForm>
       </GroupItem>
 
-      <GroupItem colCount={4} caption='Contacts'>
+      <GroupItem colCount={2} caption='IDENTIFIERS'>
         <ColCountByScreen xs={2} />
-        <ItemForm colSpan={4}>
+        <ItemForm cssClass='accent'>
           <FormTextbox
-            label='Address'
+            label='National ID'
             value={data.address}
             isEditing={!editing}
             onValueChange={updateField('address')}
           />
         </ItemForm>
 
-        <ItemForm colSpan={2}>
+        <ItemForm cssClass='accent'>
           <FormTextbox
-            label='City'
+            label='Health ID (UPI)'
             value={data.city}
             isEditing={!editing}
             onValueChange={updateField('city')}
           />
         </ItemForm>
-
-        <ItemForm>
+        <ItemForm cssClass='accent'>
           <FormTextbox
-            label='State'
-            value={data.state.stateShort}
+            label='NIDA NIN'
+            value={data.city}
             isEditing={!editing}
-            onValueChange={updateField('state')}
+            onValueChange={updateField('city')}
           />
         </ItemForm>
-
-        <ItemForm>
-          <NumberBox
-            label='Zip Code'
-            value={data.zipCode}
-            readOnly={!editing}
-            elementAttr={{ class: 'form-editor' }}
-            inputAttr={{ class: 'form-editor-input' }}
-            stylingMode='filled'
-            onValueChange={updateField('zipCode')}
-          >
-            <Validator>
-              <PatternRule
-                pattern={/^\d{5}$/}
-                message='Zip is invalid'
-              />
-            </Validator>
-          </NumberBox>
-        </ItemForm>
-      </GroupItem>
-
-      <GroupItem colCount={2} cssClass='contact-fields-group'>
-        <ColCountByScreen xs={2} />
-        <ItemForm>
+        <ItemForm cssClass='accent'>
           <FormTextbox
-            label='Phone'
-            value={data.phone}
-            mask='+1(000)000-0000'
+            label='NIDA Application number'
+            value={data.city}
             isEditing={!editing}
-            onValueChange={updateField('phone')}
-          />
-          <Button
-            className='form-item-button'
-            visible={!editing}
-            text='Call'
-            icon='tel'
-            type='default'
-            stylingMode='outlined'
-          />
-        </ItemForm>
-
-        <ItemForm>
-          <FormTextbox
-            label='Email'
-            value={data.email}
-            isEditing={!editing}
-            onValueChange={updateField('email')}
-          >
-            <EmailRule />
-          </FormTextbox>
-          <Button
-            className='form-item-button'
-            visible={!editing}
-            text='Send Email'
-            icon='email'
-            type='default'
-            stylingMode='outlined'
+            onValueChange={updateField('city')}
           />
         </ItemForm>
       </GroupItem>
