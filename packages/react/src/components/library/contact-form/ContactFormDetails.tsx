@@ -50,23 +50,9 @@ export const ContactFromDetails = ({ data, bio, editing, updateField }: {
         </ItemForm>
 
         <GroupItem>
-          <ItemForm>
-            <SelectBox
-              label='Vital Status'
-              width='100%'
-              value={data.status}
-              readOnly={!editing}
-              items={CONTACT_STATUS_LIST}
-              stylingMode={stylingMode}
-              fieldRender={statusRender}
-              itemRender={statusItemRender}
-              onValueChange={updateField('status')}
-            />
-          </ItemForm>
-
           <ItemForm cssClass='accent'>
             <FormTextbox
-              label='First Name'
+              label='Vital Status'
               value={data.firstName}
               isEditing={!editing}
               onValueChange={updateField('firstName')}
@@ -75,8 +61,17 @@ export const ContactFromDetails = ({ data, bio, editing, updateField }: {
 
           <ItemForm cssClass='accent'>
             <FormTextbox
+              label='First Name'
+              value={bio.name![0]?.family!}
+              isEditing={!editing}
+              onValueChange={updateField('firstName')}
+            />
+          </ItemForm>
+
+          <ItemForm cssClass='accent'>
+            <FormTextbox
               label='Last Name'
-              value={data.lastName}
+              value={bio.name![0]?.given![0]}
               isEditing={!editing}
               onValueChange={updateField('lastName')}
             />
@@ -85,7 +80,7 @@ export const ContactFromDetails = ({ data, bio, editing, updateField }: {
         <ItemForm cssClass='accent'>
           <FormTextbox
             label='Gender'
-            value={data.position}
+            value={bio.gender!}
             isEditing={!editing}
             onValueChange={updateField('position')}
           />
@@ -94,7 +89,7 @@ export const ContactFromDetails = ({ data, bio, editing, updateField }: {
         <ItemForm cssClass='accent'>
           <FormTextbox
             label='Date of Birth'
-            value={data.manager}
+            value={bio.birthDate!}
             isEditing={!editing}
             onValueChange={updateField('manager')}
           />

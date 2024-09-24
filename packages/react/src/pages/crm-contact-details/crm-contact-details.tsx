@@ -38,9 +38,8 @@ export const CRMContactDetails = () => {
     setIsLoading(true);
     Promise.all([
       getPatientById('7fd44f6a-3028-459a-8c47-94622dcb5623')
-        .then((data_) =>{ 
-          setBioData(data_); 
-          console.log('aaaaaaa', data_)
+        .then((data_) => {
+          setBioData(data_);
         }),
       getContact(CONTACT_ID)
         .then((data) => {
@@ -110,13 +109,16 @@ export const CRMContactDetails = () => {
 
         <div className='panels'>
           <div className='left'>
-            <ContactForm
-              data={data}
-              biodata={biodata}
-              isLoading={isLoading}
-            />
+            {isLoading ? (
+              <div>Loading...</div>
+            ) : (
+              <ContactForm
+                data={data}
+                biodata={biodata} // biodata is safely passed after loading
+                isLoading={isLoading}
+              />
+            )}
           </div>
-
           <div className='right'>
             <ContactCards
               isLoading={isLoading}

@@ -13,7 +13,9 @@ export const ToolbarForm = ({ data, biodata, editing, toggleEditing, onCancelCli
   return (
     <Toolbar className='toolbar-form'>
       <Item location='before'>
-        <span className='dx-form-group-caption'>{ data?.name ?? 'N/A' }, { data?.name ?? 'N/A' }</span>
+        <span className='dx-form-group-caption'>{biodata?.name && biodata.name.length > 0
+        ? `${biodata.name[0]?.family ?? "N/A"}, ${biodata.name[0]?.given?.[0] ?? "N/A" } ${biodata.name[0]?.given?.[1] ?? "N/A" }`
+        : "N/A"}</span>
       </Item>
       <Item location='after' visible={!editing}>
         <Button text='Edit' icon='edit' stylingMode='contained' type='default' onClick={toggleEditing} disabled />
